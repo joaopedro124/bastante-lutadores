@@ -1,4 +1,5 @@
 import pygame
+import json
 
 
 class LevelEditor:
@@ -39,6 +40,7 @@ class LevelEditor:
     def handle_events(self, event):
         if event.type == pygame.QUIT:
             self.running = False
+            self._save_map()
         if event.type == pygame.KEYDOWN:
             self._handle_keydown(event)
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -173,8 +175,16 @@ class LevelEditor:
         for sprite in self.selected_rects:
             sprite = self.selected_rects[sprite]
             sprite_image = eval(f"self.sprite{sprite["sprite"]}")
+            sprite_colorkey = (0, 255, 0)
+            sprite_image.set_colorkey(sprite_colorkey)
             sprite_pos = sprite["x"], sprite["y"]
             self.screen.blit(sprite_image, sprite_pos)
+            
+            
+    def _save_map(self):
+        with open("map.json", "w") as map_file:
+            data = json.dumps(self.selected_rects, indent=4)
+            map_file.write(data)
             
 
 
